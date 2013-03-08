@@ -18,12 +18,8 @@ net = configure(net, irisInputs, irisTargets); %view(net);
 
 fun = @(w) mse_test(w, net, irisInputs, irisTargets);
 
-% Unbounded
-lb = -Inf;
-ub = Inf;
-
 % Add 'Display' option to display result of iterations
-sa_opts = saoptimset('TolFun', 1e-6, 'Display', 'iter');
+ps_opts = psoptimset ( 'CompletePoll', 'off', 'Display', 'iter', 'MaxIter', 100); %, 'TimeLimit', 120 );
 
 % There is n_attr attributes in dataset, and there are n neurons so there 
 % are total of n_attr*n input weights (uniform weight)
@@ -39,4 +35,4 @@ initial_ol_bias    = rand(1, n_class);
 starting_values = [initial_il_weights, initial_il_bias, ...
                    initial_ol_weights, initial_ol_bias];
 
-[x, fval, flag, output] = simulannealbnd(fun, starting_values, lb, ub, sa_opts);
+[x, fval, flag, output] = patternsearch(fun, starting_values, [], [],[],[], -1e5, 1e5, ps_opts);
